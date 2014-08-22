@@ -3,12 +3,13 @@ lpczozotown
 [ymkjp/lpczozotown](https://github.com/ymkjp/lpczozotown)
 
 ## TODO
-* [ ] 期間ごとの重み付けした平均
+* [ ] 重み付けした平均 (新しければより信頼できる)
 * [ ] 回帰
 
 
 ## Data summary
 
+#### 各ファイルの行数
 ```sh
 $ wc -l ST_*.csv
   124237 ST_01_RECOMMEND.csv
@@ -17,6 +18,9 @@ $ wc -l ST_*.csv
  12050085 ST_04_LOG.csv
  13896023 total
 ```
+
+
+#### カラムとレコード
 
 ```sh
 $ head ST_*.csv | nkf -Sw
@@ -68,3 +72,95 @@ $ head ST_*.csv | nkf -Sw
 66,4709815,56163,0,2012-09-21 22:26:33.000000
 66,4709817,430524,0,2012-09-23 23:08:48.000000
 ```
+
+
+#### 購入率
+62633/12050085*100 = 0.519772267%
+
+```sh
+$ time cat ST_04_LOG.csv | nkf -Sw | awk -F"," '{ if ($4=="1") {print $0} }' | tee ~/Desktop/all_purchased.csv | wc -l
+   62633
+```
+
+[all_purchased.csv](https://dl.dropboxusercontent.com/u/6998388/all_purchased.csv)
+
+
+## 各種ランキング
+
+#### Group ID (全体)
+
+Group ID 17 が最多で 2740046/12050085*100 = 22.738810556%
+
+```sh
+$ time cat ST_04_LOG.csv | nkf -Sw | awk -F"," '{ print $1 }' | sort -n | uniq -c | sort -nr | tee ~/Desktop/ranking_group.dat | head
+2740046 17
+1721057 66
+1564684 49
+705238 51
+391782 54
+386534 44
+355981 93
+306174 21
+278707 90
+251415 57
+```
+
+#### Group ID (購入FLG=1)
+
+```sh
+$ time cat ST_04_LOG.csv | nkf -Sw | awk -F"," '{ if ($4=="1") {print $1} }' | sort -n | uniq -c | sort -nr | tee ~/Desktop/ranking_purchased_group.dat | head
+10973 17
+9435 66
+4200 51
+3959 49
+2249 54
+2116 93
+1999 44
+1960 21
+1595 90
+1518 57
+```
+
+
+#### Item ID (全体)
+
+Item ID 361006 が最多で 22957/12050085*100 = 0.190513179%
+
+```sh
+$ time cat ST_04_LOG.csv | nkf -Sw | awk -F"," '{ print $3 }' | sort -n | uniq -c | sort -nr | tee ~/Desktop/ranking_item.dat | head
+22957 361006
+20173 97457
+18831 475697
+14292 358956
+12265 650696
+11985 426028
+11682 564235
+11290 261232
+11169 663199
+10715 374034
+```
+
+#### Item ID (購入FLG=1)
+
+```sh
+$ time cat ST_04_LOG.csv | nkf -Sw | awk -F"," '{ if ($4=="1") {print $3} }' | sort -n | uniq -c | sort -nr | tee ~/Desktop/ranking_purchased_item.dat | head
+  63 684654
+  45 353807
+  42 4626
+  38 8500
+  36 309072
+  34 359899
+  30 437917
+  30 143168
+  29 121073
+  28 339563
+```
+
+
+
+
+
+
+
+
+
