@@ -82,9 +82,6 @@ $ time cat ST_04_LOG.csv | nkf -Sw | awk -F"," '{ if ($4=="1") {print $0} }' | t
    62633
 ```
 
-[all_purchased.csv](https://dl.dropboxusercontent.com/u/6998388/all_purchased.csv)
-
-
 ## 各種ランキング
 
 #### Group ID (全体)
@@ -174,6 +171,20 @@ $ grep '684654' ST_03_ITEM.csv | nkf -Sw
 684654,101,2001,トップス,Tシャツ・カットソー,24,11,1,8,ブルー系
 684654,101,2001,トップス,Tシャツ・カットソー,24,11,1,11,ピンク系
 ```
+
+
+```R
+ages <- read.csv('data/longevity.csv') guess.accuracy <- data.frame()
+for (guess in seq(63, 83, by = 1)) {
+prediction.error <- with(ages,
+mean((AgeAtDeath - guess) ^ 2))
+guess.accuracy <- rbind(guess.accuracy, data.frame(Guess = guess,
+Error = prediction.error))
+}
+ggplot(guess.accuracy, aes(x = Guess, y = Error)) + geom_point() +
+geom_line()
+```
+
 
 
 
